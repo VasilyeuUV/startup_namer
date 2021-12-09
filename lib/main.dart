@@ -27,7 +27,13 @@ class RandomWords extends StatefulWidget {
 }
 
 class _RandomWordsState extends State<RandomWords> {
+  /// для хранения списка пар слов
   final _suggestions = <WordPair>[];
+
+  /// для хранения пар слов, выбранных пользователем (в виде списка Set (а не List). Set не хранит дубликаты)
+  final _saved = <WordPair>{};
+
+  /// параметры шрифта
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   @override
@@ -64,10 +70,20 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
+    // флаг наличия пары слов в Избранном
+    final alreadySaved = _saved.contains(pair);
+
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
+      ),
+
+      // добавляем иконки
+      trailing: Icon(
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red : null,
+        semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
       ),
     );
   }
