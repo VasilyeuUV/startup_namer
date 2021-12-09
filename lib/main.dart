@@ -85,6 +85,20 @@ class _RandomWordsState extends State<RandomWords> {
         color: alreadySaved ? Colors.red : null,
         semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
       ),
+
+      // прикосновение к записи в списке
+      onTap: () {
+        // - переключение состояния
+        // (setState() запускает вызов build() State-объекта,
+        // что приводит к обновлению пользовательского интерфейса)
+        setState(() {
+          if (alreadySaved) {
+            _saved.remove(pair);
+          } else {
+            _saved.add(pair);
+          }
+        });
+      },
     );
   }
 }
