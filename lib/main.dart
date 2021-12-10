@@ -41,8 +41,61 @@ class _RandomWordsState extends State<RandomWords> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Startup Name Generator'),
+
+        // actions принимает массив виджетов
+        actions: [
+          /// Значок списка в AppBar (бургер-меню)
+          IconButton(
+            icon: const Icon(Icons.list),
+            onPressed: _pushSaved,
+            tooltip: 'Saved Suggestions',
+          ),
+        ],
       ),
       body: _buildSuggestions(),
+    );
+  }
+
+  void _pushSaved() {
+    // отправляем маршрут в стек Навигатора
+    // Навигатор добавляет кнопку «Назад» на панель приложения,
+    // т.е. явно реализовывать Navigator.pop не нужно
+    // context - это BuildContext (!!!)
+    Navigator.of(context).push(
+      // Новая страница (маршрут)
+      MaterialPageRoute<void>(
+        // - конструктор
+        builder: (context) {
+          //  -- генерируем строки ListTile
+          final tiles = _saved.map((pair) => ListTile(
+                title: Text(
+                  pair.asPascalCase,
+                  style: _biggerFont,
+                ),
+              ));
+
+          // -- список с выбранными строками
+          final devided = tiles.isNotEmpty
+              // --- divideTiles() добавляет горизонтальный интервал между каждым ListTile
+              ? ListTile.divideTiles(
+                  context: context,
+                  tiles: tiles,
+                ).toList()
+              : <Widget>[];
+
+          // возвращаем Scaffold, содержащую:
+          return Scaffold(
+            // название новой страницы (маршрута) по имени Saved Suggestions
+            appBar: AppBar(
+              title: const Text('Saved Suggestions'),
+            ),
+
+            // Тело нового маршрута состоит из ListView, содержащих ListTiles строки.
+            // Каждая строка разделена разделителем.
+            body: ListView(children: devided),
+          );
+        },
+      ),
     );
   }
 
